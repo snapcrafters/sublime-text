@@ -1,12 +1,12 @@
 name: sublime-text-3
 version: '3143'
 version-script: |
-  curl -s https://download.sublimetext.com/latest/stable
-summary: Sublime
+  curl https://download.sublimetext.com/latest/stable
+summary: A sophisticated text editor for code, markup and prose.
 description: |
-  TBD
+  A sophisticated text editor for code, markup and prose.
 
-grade: stable
+grade: devel
 confinement: classic
 architectures:
   - amd64
@@ -19,5 +19,4 @@ apps:
 parts:
   android-studio:
     plugin: dump
-    # source: https://download.sublimetext.com/latest/stable/linux/x64/bz2
     source: https://download.sublimetext.com/sublime_text_3_build_$SNAPCRAFT_PROJECT_VERSION_x64.tar.bz2

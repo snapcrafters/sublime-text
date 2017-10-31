@@ -6,7 +6,7 @@ summary: A sophisticated text editor for code, markup and prose.
 description: |
   A sophisticated text editor for code, markup and prose.
 
-grade: devel
+grade: stable
 confinement: classic
 architectures:
   - amd64

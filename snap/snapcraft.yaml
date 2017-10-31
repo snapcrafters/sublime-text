@@ -1,7 +1,7 @@
 name: sublime-text-3
 version: '3143'
 version-script: |
-  curl https://download.sublimetext.com/latest/stable
+  python3 -c "import urllib.request; print(urllib.request.urlopen(\"https://download.sublimetext.com/latest/stable\").read().decode().strip())"
 summary: A sophisticated text editor for code, markup and prose.
 description: |
   A sophisticated text editor for code, markup and prose.
@@ -10,6 +10,7 @@ grade: stable
 confinement: classic
 architectures:
   - amd64
+  - i386
 
 apps:
   sublime-text-3:
@@ -17,6 +18,6 @@ apps:
     desktop: sublime_text.desktop
 
 parts:
-  android-studio:
+  sublime-text-3:
     plugin: dump
     source: https://download.sublimetext.com/sublime_text_3_build_$SNAPCRAFT_PROJECT_VERSION_x64.tar.bz2

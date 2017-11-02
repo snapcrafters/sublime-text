@@ -1,8 +1,9 @@
 <h1 align="center">
-  <img src="https://avatars1.githubusercontent.com/u/29598503?v=3&s=256" alt="Sublime Text 3">
+  <img src="https://avatars1.githubusercontent.com/u/684879?s=200&v=4&s=256" alt="Sublime Text 3">
   <br />
   Sublime Text 3
 </h1>
+
 
 <p align="center"><b>This is the snap for Sublime Text 3</b>, <i>"A sophisticated text editor for code, markup and prose"</i>. It works on Ubuntu, Fedora, Debian, and other major Linux
 distributions.</p>
@@ -15,7 +16,6 @@ distributions.</p>
 
 ## Install
 
-    sudo apt install snapd-xdg-open
     sudo snap install sublime-text-3
 
 ([Don't have snapd installed?](https://snapcraft.io/docs/core/install))

@@ -16,7 +16,7 @@ distributions.</p>
 
 ## Install
 
-    sudo snap install sublime-text-3
+    sudo snap install sublime-text-3 --classic
 
 ([Don't have snapd installed?](https://snapcraft.io/docs/core/install))
 

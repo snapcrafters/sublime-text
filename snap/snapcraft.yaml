@@ -21,3 +21,5 @@ parts:
   sublime-text-3:
     plugin: dump
     source: https://download.sublimetext.com/sublime_text_3_build_$SNAPCRAFT_PROJECT_VERSION_x64.tar.bz2
+    install: |
+      sed -i 's|Icon=.*|Icon=/Icon/48x48/sublime-text.png|g' $SNAPCRAFT_PART_INSTALL/sublime_text.desktop

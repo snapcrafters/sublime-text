@@ -10,7 +10,7 @@ architectures:
   - amd64
 
 apps:
-  sublime-text-3:
+  subl:
     command: sublime_text
     desktop: sublime_text.desktop
 

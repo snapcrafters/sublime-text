@@ -13,7 +13,6 @@ apps:
   sublime-text-3:
     command: sublime_text
     desktop: sublime_text.desktop
-    aliases: [subl]
 
 parts:
   sublime-text-3:

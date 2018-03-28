@@ -20,3 +20,7 @@ parts:
     source: https://download.sublimetext.com/sublime_text_3_build_$SNAPCRAFT_PROJECT_VERSION_x64.tar.bz2
     install: |
       sed -i 's|Icon=.*|Icon=/Icon/256x256/sublime-text.png|g' $SNAPCRAFT_PART_INSTALL/sublime_text.desktop
+      sed -i 's|/opt/sublime_text/sublime_text|'"$SNAP"'/sublime_text|g' $SNAPCRAFT_PART_INSTALL/sublime_text.desktop
+    stage-packages:
+      - libgtk2.0-0
+      - libc6

@@ -1,5 +1,6 @@
 name: sublime-text
-version: '3170'
+version: latest
+version-script: cat $SNAPCRAFT_STAGE/version
 summary: A sophisticated text editor for code, markup and prose.
 description: |
   A sophisticated text editor for code, markup and prose.
@@ -9,16 +10,59 @@ confinement: classic
 
 apps:
   subl:
-    command: sublime_text
-    desktop: sublime_text.desktop
+    command: opt/sublime_text/sublime_text
+    desktop: opt/sublime_text/sublime_text.desktop
 
 parts:
   sublime-text:
-    plugin: dump
-    source: https://download.sublimetext.com/sublime_text_3_build_$SNAPCRAFT_PROJECT_VERSION_x64.tar.bz2
-    install: |
-      sed -i 's|Icon=.*|Icon=/Icon/256x256/sublime-text.png|g' $SNAPCRAFT_PART_INSTALL/sublime_text.desktop
-      sed -i 's|/opt/sublime_text/sublime_text|sublime_text|g' $SNAPCRAFT_PART_INSTALL/sublime_text.desktop
+    plugin: nil
+    override-build: |
+      snapcraftctl build
+      # Get the latest release
+      echo "Get latest release..."
+      wget --quiet https://download.sublimetext.com/latest/stable -O release.txt
+      VERSION=$(cat release.txt)
+      echo $VERSION > $SNAPCRAFT_STAGE/version
+      rm -f release.txt 2>/dev/null
+
+      # Download the latest tarball
+      ARCHITECTURE=$(dpkg --print-architecture)
+      if [ "${ARCHITECTURE}" = "amd64" ]; then
+        BUILD="x64"
+      elif [ "${ARCHITECTURE}" = "i386" ]; then
+        BUILD="x32"
+      else
+        echo "ERROR! Sublime Text tarballs are only available for amd64 and i386. Failing the build here."
+        exit 1
+      fi
+      TARBALL="sublime_text_3_build_${VERSION}_${BUILD}.tar.bz2"
+      TARBALL_URL="https://download.sublimetext.com/${TARBALL}"
+      echo "Downloading ${TARBALL_URL}..."
+      wget --quiet "${TARBALL_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${TARBALL}"
+
+      echo "Unpacking ${TARBALL}..."
+      mkdir -p "${SNAPCRAFT_PART_INSTALL}/opt"
+      tar xf "${SNAPCRAFT_PART_INSTALL}/${TARBALL}" -C "${SNAPCRAFT_PART_INSTALL}/opt"
+      rm "${SNAPCRAFT_PART_INSTALL}/${TARBALL}"
+
+      # Correct the extraction path so it matches assets held within.
+      mv "${SNAPCRAFT_PART_INSTALL}/opt/sublime_text_3" "${SNAPCRAFT_PART_INSTALL}/opt/sublime_text"
+
+      # Correct icon path
+      sed -i 's|Icon=sublime-text|Icon=/opt/sublime_text/Icon/256x256/sublime-text.png|' $SNAPCRAFT_PART_INSTALL/opt/sublime_text/sublime_text.desktop
+      # Desktop Action are not Unity specific.
+      sed -i 's|OnlyShowIn|#OnlyShowIn|g' $SNAPCRAFT_PART_INSTALL/opt/sublime_text/sublime_text.desktop
+    build-packages:
+      - dpkg
+      - sed
+      - tar
+      - wget
     stage-packages:
+      - libbsd0
+      - libffi6
       - libgtk2.0-0
-      - libc6
+      - libpcre3
+      - libx11-6
+      - libxau6
+      - libxcb1
+      - libxdmcp6

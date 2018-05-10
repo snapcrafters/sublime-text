@@ -18,9 +18,10 @@ parts:
     plugin: nil
     override-build: |
       snapcraftctl build
-      # Get the latest release
-      echo "Get latest release..."
-      wget --quiet https://download.sublimetext.com/latest/stable -O release.txt
+      # Get the latest release ("dev" by default, change to "stable" when required)
+      SUBLIME_CHANNEL=dev
+      echo "Getting the latest ${SUBLIME_CHANNEL} release build number..."
+      wget --quiet https://download.sublimetext.com/latest/${SUBLIME_CHANNEL} -O release.txt
       VERSION=$(cat release.txt)
       echo $VERSION > $SNAPCRAFT_STAGE/version
       rm -f release.txt 2>/dev/null

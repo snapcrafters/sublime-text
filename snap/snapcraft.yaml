@@ -5,6 +5,10 @@ summary: A sophisticated text editor for code, markup and prose.
 description: |
   A sophisticated text editor for code, markup and prose.
 
+architectures:
+  - build-on: i386
+  - build-on: amd64
+
 grade: stable
 confinement: classic
 

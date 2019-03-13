@@ -64,7 +64,8 @@ parts:
     stage-packages:
       - libbsd0
       - libffi6
-      - libgtk2.0-0libgtk-3-0libpcre3
+      - libgtk-3-0
+      - libpcre3
       - libx11-6
       - libxau6
       - libxcb1

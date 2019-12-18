@@ -1,5 +1,4 @@
 name: sublime-text
-base: core
 adopt-info: sublime-text
 summary: A sophisticated text editor for code, markup and prose.
 description: |

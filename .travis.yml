@@ -8,9 +8,11 @@ env:
 
 install:
   - sudo apt update
+  - sudo apt purge -y lxd* lxc*
+  - sudo apt -y autoremove
   - sudo apt install -y snapd
   - sudo snap install lxd --channel 3.0/stable
-  - sudo snap install snapcraft --candidate --classic
+  - sudo snap install snapcraft --classic
   - sudo /snap/bin/lxd waitready
   - sudo /snap/bin/lxd init --auto
   - mkdir -p "$TRAVIS_BUILD_DIR/snaps-cache"

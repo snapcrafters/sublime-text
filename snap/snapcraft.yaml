@@ -1,6 +1,6 @@
 name: sublime-text
-version: latest
-version-script: cat $SNAPCRAFT_STAGE/version
+base: core
+adopt-info: sublime-text
 summary: A sophisticated text editor for code, markup and prose.
 description: |
   A sophisticated text editor for code, markup and prose.
@@ -24,10 +24,8 @@ parts:
       snapcraftctl build
       # Get the latest release
       echo "Get latest release..."
-      wget --quiet https://download.sublimetext.com/latest/stable -O release.txt
-      VERSION=$(cat release.txt)
-      echo $VERSION > $SNAPCRAFT_STAGE/version
-      rm -f release.txt 2>/dev/null
+      VERSION=$(curl -s https://download.sublimetext.com/latest/stable)
+      snapcraftctl set-version $VERSION
 
       # Download the latest tarball
       ARCHITECTURE=$(dpkg --print-architecture)
@@ -39,15 +37,10 @@ parts:
         echo "ERROR! Sublime Text tarballs are only available for amd64 and i386. Failing the build here."
         exit 1
       fi
-      TARBALL="sublime_text_3_build_${VERSION}_${BUILD}.tar.bz2"
-      TARBALL_URL="https://download.sublimetext.com/${TARBALL}"
-      echo "Downloading ${TARBALL_URL}..."
-      wget --quiet "${TARBALL_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${TARBALL}"
-
-      echo "Unpacking ${TARBALL}..."
+      TARBALL_URL=https://download.sublimetext.com/sublime_text_3_build_${VERSION}_${BUILD}.tar.bz2
       mkdir -p "${SNAPCRAFT_PART_INSTALL}/opt"
-      tar xf "${SNAPCRAFT_PART_INSTALL}/${TARBALL}" -C "${SNAPCRAFT_PART_INSTALL}/opt"
-      rm "${SNAPCRAFT_PART_INSTALL}/${TARBALL}"
+      echo "Downloading ${TARBALL_URL}..."
+      wget -q -O- "${TARBALL_URL}" | tar jxf - -C "${SNAPCRAFT_PART_INSTALL}/opt"
 
       # Correct the extraction path so it matches assets held within.
       mv "${SNAPCRAFT_PART_INSTALL}/opt/sublime_text_3" "${SNAPCRAFT_PART_INSTALL}/opt/sublime_text"
@@ -61,6 +54,8 @@ parts:
       - sed
       - tar
       - wget
+      - curl
+      - bzip2
     stage-packages:
       - libbsd0
       - libffi6

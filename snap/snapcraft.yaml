@@ -13,8 +13,8 @@ confinement: classic
 
 apps:
   subl:
-    command: opt/sublime_text/sublime_text
-    desktop: opt/sublime_text/sublime_text.desktop
+    command: sublime_text/sublime_text
+    desktop: sublime_text/sublime_text.desktop
 
 parts:
   sublime-text:
@@ -37,17 +37,16 @@ parts:
         exit 1
       fi
       TARBALL_URL=https://download.sublimetext.com/sublime_text_3_build_${VERSION}_${BUILD}.tar.bz2
-      mkdir -p "${SNAPCRAFT_PART_INSTALL}/opt"
       echo "Downloading ${TARBALL_URL}..."
-      wget -q -O- "${TARBALL_URL}" | tar jxf - -C "${SNAPCRAFT_PART_INSTALL}/opt"
+      wget -q -O- "${TARBALL_URL}" | tar jxf - -C "${SNAPCRAFT_PART_INSTALL}"
 
       # Correct the extraction path so it matches assets held within.
-      mv "${SNAPCRAFT_PART_INSTALL}/opt/sublime_text_3" "${SNAPCRAFT_PART_INSTALL}/opt/sublime_text"
+      mv "${SNAPCRAFT_PART_INSTALL}/sublime_text_3" "${SNAPCRAFT_PART_INSTALL}/sublime_text"
 
       # Correct icon path
-      sed -i 's|Icon=sublime-text|Icon=/opt/sublime_text/Icon/256x256/sublime-text.png|' $SNAPCRAFT_PART_INSTALL/opt/sublime_text/sublime_text.desktop
+      sed -i 's|Icon=sublime-text|Icon=/sublime_text/Icon/256x256/sublime-text.png|' $SNAPCRAFT_PART_INSTALL/sublime_text/sublime_text.desktop
       # Desktop Action are not Unity specific.
-      sed -i 's|OnlyShowIn|#OnlyShowIn|g' $SNAPCRAFT_PART_INSTALL/opt/sublime_text/sublime_text.desktop
+      sed -i 's|OnlyShowIn|#OnlyShowIn|g' $SNAPCRAFT_PART_INSTALL/sublime_text/sublime_text.desktop
     build-packages:
       - dpkg
       - sed

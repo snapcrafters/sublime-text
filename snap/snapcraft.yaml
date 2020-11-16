@@ -1,10 +1,9 @@
 name: sublime-text
-version: latest
-version-script: cat $SNAPCRAFT_STAGE/version
+adopt-info: sublime-text
 summary: A sophisticated text editor for code, markup and prose.
 description: |
   A sophisticated text editor for code, markup and prose.
-
+base: core20
 architectures:
   - build-on: i386
   - build-on: amd64
@@ -56,6 +55,7 @@ parts:
       sed -i 's|Icon=sublime-text|Icon=/opt/sublime_text/Icon/256x256/sublime-text.png|' $SNAPCRAFT_PART_INSTALL/opt/sublime_text/sublime_text.desktop
       # Desktop Action are not Unity specific.
       sed -i 's|OnlyShowIn|#OnlyShowIn|g' $SNAPCRAFT_PART_INSTALL/opt/sublime_text/sublime_text.desktop
+      snapcraftctl set-version "$(cat $SNAPCRAFT_STAGE/version)"
     build-packages:
       - dpkg
       - sed
@@ -63,7 +63,7 @@ parts:
       - wget
     stage-packages:
       - libbsd0
-      - libffi6
+      - libffi7
       - libgtk-3-0
       - libpcre3
       - libx11-6

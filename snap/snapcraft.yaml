@@ -21,6 +21,7 @@ parts:
     plugin: nil
     override-build: |
       snapcraftctl build
+
       # Get the latest release
       echo "Get latest release..."
       wget --quiet https://download.sublimetext.com/latest/stable -O release.txt
@@ -30,6 +31,7 @@ parts:
 
       # Download the latest tarball
       ARCHITECTURE=$(dpkg --print-architecture)
+
       if [ "${ARCHITECTURE}" = "amd64" ]; then
         BUILD="x64"
       elif [ "${ARCHITECTURE}" = "i386" ]; then
@@ -38,8 +40,10 @@ parts:
         echo "ERROR! Sublime Text tarballs are only available for amd64 and i386. Failing the build here."
         exit 1
       fi
-      TARBALL="sublime_text_3_build_${VERSION}_${BUILD}.tar.bz2"
+
+      TARBALL="sublime_text_build_${VERSION}_${BUILD}.tar.xz"
       TARBALL_URL="https://download.sublimetext.com/${TARBALL}"
+
       echo "Downloading ${TARBALL_URL}..."
       wget --quiet "${TARBALL_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${TARBALL}"
 
@@ -48,11 +52,9 @@ parts:
       tar xf "${SNAPCRAFT_PART_INSTALL}/${TARBALL}" -C "${SNAPCRAFT_PART_INSTALL}/opt"
       rm "${SNAPCRAFT_PART_INSTALL}/${TARBALL}"
 
-      # Correct the extraction path so it matches assets held within.
-      mv "${SNAPCRAFT_PART_INSTALL}/opt/sublime_text_3" "${SNAPCRAFT_PART_INSTALL}/opt/sublime_text"
-
       # Correct icon path
       sed -i 's|Icon=sublime-text|Icon=/opt/sublime_text/Icon/256x256/sublime-text.png|' $SNAPCRAFT_PART_INSTALL/opt/sublime_text/sublime_text.desktop
+
       # Desktop Action are not Unity specific.
       sed -i 's|OnlyShowIn|#OnlyShowIn|g' $SNAPCRAFT_PART_INSTALL/opt/sublime_text/sublime_text.desktop
       snapcraftctl set-version "$(cat $SNAPCRAFT_STAGE/version)"

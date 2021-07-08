@@ -5,7 +5,7 @@ description: |
   A sophisticated text editor for code, markup and prose.
 base: core20
 architectures:
-  - build-on: i386
+  - build-on: arm64
   - build-on: amd64
 
 grade: stable
@@ -34,10 +34,10 @@ parts:
 
       if [ "${ARCHITECTURE}" = "amd64" ]; then
         BUILD="x64"
-      elif [ "${ARCHITECTURE}" = "i386" ]; then
-        BUILD="x32"
+      elif [ "${ARCHITECTURE}" = "arm64" ]; then
+        BUILD="arm64"
       else
-        echo "ERROR! Sublime Text tarballs are only available for amd64 and i386. Failing the build here."
+        echo "ERROR! Sublime Text tarballs are only available for amd64 and arm64. Failing the build here."
         exit 1
       fi
 

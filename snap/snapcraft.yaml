@@ -10,6 +10,7 @@ architectures:
 
 grade: stable
 confinement: classic
+compression: lzo
 
 apps:
   subl:

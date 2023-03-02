@@ -5,12 +5,15 @@ title: Sublime Text
 description: |
   Sublime Text is a powerful multi-platform text editor with a clean, modern user interface.
   Bringing wide support for programming languages, extensions, syntax-based features and many other useful features alongside low resource usage, Sublime Text proves itself to be a very competent solution for a vast set of environments and applications.
+  The software may be downloaded and evaluated for free, however a license must be purchased for continued use.
+
+    **Authors**
   
-  Note - Sublime Text may be downloaded and evaluated for free, however a license must be purchased for continued use.
-contact: https://www.sublimetext.com/support
+  This snap is maintained by the Snapcrafters community, and is not necessarily endorsed or officially maintained by the upstream developers.
+contact: https://github.com/snapcrafters/sublime-text/issues
 issues: https://github.com/snapcrafters/sublime-text/issues
-source-code: https://github.com/snapcrafters/sublime-text
-website: https://snapcraft.io/publisher/snapcrafters
+website: https://www.sublimetext.com/
+license: Proprietary
 
 base: core20
 architectures:
@@ -20,7 +23,6 @@ architectures:
 grade: stable
 confinement: classic
 compression: lzo
-license: Proprietary
 
 apps:
   subl:

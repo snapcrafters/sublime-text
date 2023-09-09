@@ -19,11 +19,13 @@ jobs:
           # For example, assuming the version is available in a text file at a URL
           new_version=$(wget -qO- https://download.sublimetext.com/latest/stable)
           echo "New version: $new_version"
-          echo "::set-output name=new_version::$new_version"
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
       - name: Compare versions
         id: compare-versions
         run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
           current_version=$(grep 'version:' snap/snapcraft.yaml | awk -F"'" '{print $2}')
           new_version=${{ steps.fetch-version.outputs.new_version }}
 

@@ -1,5 +1,5 @@
 name: sublime-text
-adopt-info: sublime-text
+version: '4152'
 summary: A sophisticated text editor for code, markup and prose.
 title: Sublime Text
 description: |
@@ -15,7 +15,7 @@ issues: https://github.com/snapcrafters/sublime-text/issues
 website: https://www.sublimetext.com/
 license: Proprietary
 
-base: core20
+base: core22
 architectures:
   - build-on: arm64
   - build-on: amd64
@@ -27,55 +27,19 @@ compression: lzo
 apps:
   subl:
     command: opt/sublime_text/sublime_text
-    desktop: opt/sublime_text/sublime_text.desktop
+    desktop: usr/share/applications/sublime_text.desktop
 
 parts:
   sublime-text:
-    plugin: nil
+    source: https://download.sublimetext.com/sublime-text_build-$SNAPCRAFT_PROJECT_VERSION_$CRAFT_TARGET_ARCH.deb
+    plugin: dump
     override-build: |
-      snapcraftctl build
-
-      # Get the latest release
-      echo "Get latest release..."
-      wget --quiet https://download.sublimetext.com/latest/stable -O release.txt
-      VERSION=$(cat release.txt)
-      echo $VERSION > $SNAPCRAFT_STAGE/version
-      rm -f release.txt 2>/dev/null
-
-      # Download the latest tarball
-      ARCHITECTURE=$(dpkg --print-architecture)
-
-      if [ "${ARCHITECTURE}" = "amd64" ]; then
-        BUILD="x64"
-      elif [ "${ARCHITECTURE}" = "arm64" ]; then
-        BUILD="arm64"
-      else
-        echo "ERROR! Sublime Text tarballs are only available for amd64 and arm64. Failing the build here."
-        exit 1
-      fi
-
-      TARBALL="sublime_text_build_${VERSION}_${BUILD}.tar.xz"
-      TARBALL_URL="https://download.sublimetext.com/${TARBALL}"
-
-      echo "Downloading ${TARBALL_URL}..."
-      wget --quiet "${TARBALL_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${TARBALL}"
-
-      echo "Unpacking ${TARBALL}..."
-      mkdir -p "${SNAPCRAFT_PART_INSTALL}/opt"
-      tar xf "${SNAPCRAFT_PART_INSTALL}/${TARBALL}" -C "${SNAPCRAFT_PART_INSTALL}/opt"
-      rm "${SNAPCRAFT_PART_INSTALL}/${TARBALL}"
-
+      craftctl default
       # Correct icon path
-      sed -i 's|Icon=sublime-text|Icon=/opt/sublime_text/Icon/256x256/sublime-text.png|' $SNAPCRAFT_PART_INSTALL/opt/sublime_text/sublime_text.desktop
+      sed -i 's|Icon=sublime-text|Icon=usr/share/icons/hicolor/256x256/apps/sublime-text.png|' $CRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
 
       # Desktop Action are not Unity specific.
-      sed -i 's|OnlyShowIn|#OnlyShowIn|g' $SNAPCRAFT_PART_INSTALL/opt/sublime_text/sublime_text.desktop
-      snapcraftctl set-version "$(cat $SNAPCRAFT_STAGE/version)"
-    build-packages:
-      - dpkg
-      - sed
-      - tar
-      - wget
+      sed -i 's|OnlyShowIn|#OnlyShowIn|g' $CRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
     stage-packages:
       - libbsd0
       - libffi7

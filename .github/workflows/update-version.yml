@@ -1,0 +1,45 @@
+name: Update snapcraft.yaml
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Fetch new version number
+        id: fetch-version
+        run: |
+          # Use wget or curl to fetch the new version number from an external source
+          # For example, assuming the version is available in a text file at a URL
+          new_version=$(wget -qO- https://download.sublimetext.com/latest/stable)
+          echo "New version: $new_version"
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Compare versions
+        id: compare-versions
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          current_version=$(grep 'version:' snap/snapcraft.yaml | awk -F"'" '{print $2}')
+          new_version=${{ steps.fetch-version.outputs.new_version }}
+
+          if [[ "$current_version" != "$new_version" ]]; then
+            echo "Updating Snapcraft.yaml..."
+            sed -i "s/version: '$current_version'/version: '$new_version'/" Snapcraft.yaml
+            git add Snapcraft.yaml
+            git commit -m "Update Snapcraft.yaml to version $new_version"
+            git push
+          else
+            echo "Versions match. No update needed."
+          fi
+
+      - name: Cleanup
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"

@@ -41,6 +41,7 @@ parts:
       # Desktop Action are not Unity specific.
       sed -i 's|OnlyShowIn|#OnlyShowIn|g' $CRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
     stage-packages:
+      - libmd0
       - libbsd0
       - libffi7
       - libgtk-3-0

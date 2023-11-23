@@ -15,7 +15,10 @@ issues: https://github.com/snapcrafters/sublime-text/issues
 website: https://www.sublimetext.com/
 license: Proprietary
 
-base: core22
+# Do not rev to core22. The upstream binary appears to be built on/against Ubuntu 20.04
+# so moving to core22 will likely break this, as the new core will ship newer incompatible
+# libc - as seen in issue #47
+base: core20
 architectures:
   - build-on: arm64
   - build-on: amd64
@@ -31,17 +34,16 @@ apps:
 
 parts:
   sublime-text:
-    source: https://download.sublimetext.com/sublime-text_build-$SNAPCRAFT_PROJECT_VERSION_$CRAFT_TARGET_ARCH.deb
+    source: https://download.sublimetext.com/sublime-text_build-$SNAPCRAFT_PROJECT_VERSION_$SNAPCRAFT_TARGET_ARCH.deb
     plugin: dump
     override-build: |
-      craftctl default
+      snapcraftctl build
       # Correct icon path
-      sed -i 's|Icon=sublime-text|Icon=usr/share/icons/hicolor/256x256/apps/sublime-text.png|' $CRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
+      sed -i 's|Icon=sublime-text|Icon=usr/share/icons/hicolor/256x256/apps/sublime-text.png|' $SNAPCRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
 
       # Desktop Action are not Unity specific.
-      sed -i 's|OnlyShowIn|#OnlyShowIn|g' $CRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
+      sed -i 's|OnlyShowIn|#OnlyShowIn|g' $SNAPCRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
     stage-packages:
-      - libmd0
       - libbsd0
       - libffi7
       - libgtk-3-0

@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Fetch new version number
         id: fetch-version
@@ -30,10 +30,10 @@ jobs:
           new_version=${{ steps.fetch-version.outputs.new_version }}
 
           if [[ "$current_version" != "$new_version" ]]; then
-            echo "Updating Snapcraft.yaml..."
-            sed -i "s/version: '$current_version'/version: '$new_version'/" Snapcraft.yaml
-            git add Snapcraft.yaml
-            git commit -m "Update Snapcraft.yaml to version $new_version"
+            echo "Updating snapcraft.yaml..."
+            sed -i "s/version: '$current_version'/version: '$new_version'/" snap/snapcraft.yaml
+            git add snap/snapcraft.yaml
+            git commit -m "Update snapcraft.yaml to version $new_version"
             git push
           else
             echo "Versions match. No update needed."

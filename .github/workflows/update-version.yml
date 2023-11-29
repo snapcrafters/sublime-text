@@ -26,8 +26,8 @@ jobs:
       - name: Compare versions
         id: compare-versions
         run: |
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
+          git config --global user.name 'Snapcrafters Bot'
+          git config --global user.email 'merlijn.sebrechts+snapcrafters-bot@gmail.com'
           current_version=$(grep 'version:' snap/snapcraft.yaml | awk -F"'" '{print $2}')
           new_version=${{ steps.fetch-version.outputs.new_version }}
 
@@ -41,7 +41,3 @@ jobs:
             echo "Versions match. No update needed."
           fi
 
-      - name: Cleanup
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"

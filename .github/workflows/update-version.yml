@@ -8,7 +8,7 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    environment: "Candidate Channel"
+    environment: "Candidate Branch"
 
     steps:
       - name: Checkout code

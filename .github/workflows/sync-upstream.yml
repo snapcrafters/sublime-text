@@ -1,0 +1,26 @@
+name: Update
+
+on:
+  # Runs at 10:00 UTC every day
+  schedule:
+    - cron: "0 10 * * *"
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Sync version with upstream
+    environment: "Candidate Branch"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync version with upstream
+        uses: snapcrafters/ci/sync-version@main
+        with:
+          token: ${{ secrets.SNAPCRAFTERS_BOT_COMMIT }}
+          update-script: |
+            stable_version=$(wget -qO- https://download.sublimetext.com/latest/stable)
+            sed -i 's/^\(version: \).*$/\1'"\"$stable_version\""'/' snap/snapcraft.yaml

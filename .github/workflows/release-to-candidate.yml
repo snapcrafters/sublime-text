@@ -71,3 +71,4 @@ jobs:
           issue-number: ${{ needs.call-for-testing.outputs.issue-number }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           screenshots-token: ${{ secrets.SNAPCRAFTERS_BOT_COMMIT }}
+          snap-application-name: subl

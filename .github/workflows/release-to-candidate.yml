@@ -3,7 +3,7 @@ name: Release
 on:
   # Run the workflow each time new commits are pushed to the candidate branch.
   push:
-    branches: ["candidate"]
+    branches: ["dev"]
   workflow_dispatch:
 
 concurrency:
@@ -27,18 +27,19 @@ jobs:
         uses: snapcrafters/ci/get-architectures@main
 
   release:
-    name: 🚢 Release to latest/candidate
+    name: 🚢 Release to dev/candidate
     needs: get-architectures
     runs-on: ubuntu-latest
-    environment: "Candidate Branch"
+    environment: "Dev Branch"
     strategy:
       matrix:
         architecture: ${{ fromJSON(needs.get-architectures.outputs.architectures-list) }}
     steps:
-      - name: 🚢 Release to latest/candidate
+      - name: 🚢 Release to dev/candidate
         uses: snapcrafters/ci/release-to-candidate@main
         with:
           architecture: ${{ matrix.architecture }}
+          channel: dev/candidate
           launchpad-token: ${{ secrets.LP_BUILD_SECRET }}
           repo-token: ${{ secrets.SNAPCRAFTERS_BOT_COMMIT }}
           store-token: ${{ secrets.SNAP_STORE_CANDIDATE }}
@@ -46,7 +47,7 @@ jobs:
   call-for-testing:
     name: 📣 Create call for testing
     needs: [release, get-architectures]
-    environment: "Candidate Branch"
+    environment: "Dev Branch"
     runs-on: ubuntu-latest
     outputs:
       issue-number: ${{ steps.issue.outputs.issue-number }}
@@ -56,18 +57,20 @@ jobs:
         uses: snapcrafters/ci/call-for-testing@main
         with:
           architectures: ${{ needs.get-architectures.outputs.architectures }}
+          channel: dev/candidate
           github-token: ${{ secrets.GITHUB_TOKEN }}
           snapcraft-channel: 7.x/stable
 
   screenshots:
     name: 📸 Gather screenshots
     needs: call-for-testing
-    environment: "Candidate Branch"
+    environment: "Dev Branch"
     runs-on: ubuntu-latest
     steps:
       - name: 📸 Gather screenshots
         uses: snapcrafters/ci/get-screenshots@main
         with:
+          channel: dev/candidate
           issue-number: ${{ needs.call-for-testing.outputs.issue-number }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           screenshots-token: ${{ secrets.SNAPCRAFTERS_BOT_COMMIT }}

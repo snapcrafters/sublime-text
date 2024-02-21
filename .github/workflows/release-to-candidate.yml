@@ -60,6 +60,7 @@ jobs:
           channel: dev/candidate
           github-token: ${{ secrets.GITHUB_TOKEN }}
           snapcraft-channel: 7.x/stable
+          promotion-channel: dev/stable
 
   screenshots:
     name: 📸 Gather screenshots

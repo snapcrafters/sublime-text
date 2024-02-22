@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  sync:
+  sync-candidate:
     name: Sync version with upstream
     environment: "Candidate Branch"
     runs-on: ubuntu-latest
@@ -24,3 +24,17 @@ jobs:
           update-script: |
             stable_version=$(wget -qO- https://download.sublimetext.com/latest/stable)
             sed -i 's/^\(version: \).*$/\1'"\"$stable_version\""'/' snap/snapcraft.yaml
+
+  sync-dev:
+    name: Sync dev version with upstream
+    environment: "Dev Branch"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync version with upstream
+        uses: snapcrafters/ci/sync-version@main
+        with:
+          branch: dev
+          token: ${{ secrets.SNAPCRAFTERS_BOT_COMMIT }}
+          update-script: |
+            dev_version=$(wget -qO- https://download.sublimetext.com/latest/dev)
+            sed -i 's/^\(version: \).*$/\1'"\"$dev_version\""'/' snap/snapcraft.yaml

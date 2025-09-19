@@ -20,8 +20,8 @@ license: Proprietary
 # libc - as seen in issue #47
 base: core20
 architectures:
-  - build-on: arm64
-  - build-on: amd64
+  - arm64
+  - amd64
 
 grade: stable
 confinement: classic

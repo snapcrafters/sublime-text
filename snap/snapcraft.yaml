@@ -34,7 +34,7 @@ apps:
 
 parts:
   sublime-text:
-    source: https://download.sublimetext.com/sublime-text_build-$SNAPCRAFT_PROJECT_VERSION_$SNAPCRAFT_TARGET_ARCH.deb
+    source: https://download.sublimetext.com/sublime-text_build-$SNAPCRAFT_PROJECT_VERSION_$SNAPCRAFT_ARCH_BUILD_FOR.deb
     plugin: dump
     override-build: |
       snapcraftctl build

@@ -15,10 +15,7 @@ issues: https://github.com/snapcrafters/sublime-text/issues
 website: https://www.sublimetext.com/
 license: Proprietary
 
-# Do not rev to core22. The upstream binary appears to be built on/against Ubuntu 20.04
-# so moving to core22 will likely break this, as the new core will ship newer incompatible
-# libc - as seen in issue #47
-base: core20
+base: core22
 architectures:
   - arm64
   - amd64

@@ -50,4 +50,4 @@ parts:
       - libxcb1
       - libxdmcp6
     build-attributes:
-      - no-patchelf
+      - enable-patchelf

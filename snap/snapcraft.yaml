@@ -28,6 +28,8 @@ apps:
   subl:
     command: opt/sublime_text/sublime_text
     desktop: usr/share/applications/sublime_text.desktop
+    environment:
+      LD_LIBRARY_PATH: $SNAP/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:/snap/core22/current/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:/snap/core22/current/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
 
 parts:
   sublime-text:
@@ -49,5 +51,6 @@ parts:
       - libxau6
       - libxcb1
       - libxdmcp6
+      - libgl1
     build-attributes:
       - enable-patchelf

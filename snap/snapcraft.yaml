@@ -13,44 +13,74 @@ description: |
 contact: https://github.com/snapcrafters/sublime-text/issues
 issues: https://github.com/snapcrafters/sublime-text/issues
 website: https://www.sublimetext.com/
+source-code: https://github.com/snapcrafters/sublime-text
 license: Proprietary
 
-base: core22
-architectures:
-  - arm64
-  - amd64
+base: core24
+platforms:
+  amd64:
+  arm64:
 
 grade: stable
 confinement: classic
 compression: lzo
 
+# These libraries are discovered at runtime by libGL, GTK, or Sublime Text.
+lint:
+  ignore:
+    - library:
+        - usr/lib/**/libGLX_mesa.so*
+        - usr/lib/**/libXxf86vm.so*
+        - usr/lib/**/libcurl.so*
+        - usr/lib/**/libdconf.so*
+        - usr/lib/**/liblber.so*
+        - usr/lib/**/libldap.so*
+        - usr/lib/**/libnghttp2.so*
+        - usr/lib/**/libpsl.so*
+        - usr/lib/**/librtmp.so*
+        - usr/lib/**/libssh.so*
+        - usr/lib/**/libsasl2.so*
+        - usr/lib/**/libvulkan.so*
+        - usr/lib/**/libxcb-glx.so*
+
 apps:
   subl:
     command: opt/sublime_text/sublime_text
     desktop: usr/share/applications/sublime_text.desktop
-    environment:
-      LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu:$SNAP/usr/lib/aarch64-linux-gnu
 
 parts:
   sublime-text:
-    source: https://download.sublimetext.com/sublime-text_build-$SNAPCRAFT_PROJECT_VERSION_$SNAPCRAFT_TARGET_ARCH.deb
+    source: https://download.sublimetext.com/sublime-text_build-${CRAFT_PROJECT_VERSION}_${CRAFT_ARCH_BUILD_FOR}.deb
     plugin: dump
     override-build: |
-      snapcraftctl build
+      craftctl default
       # Correct icon path
-      sed -i 's|Icon=sublime-text|Icon=usr/share/icons/hicolor/256x256/apps/sublime-text.png|' $SNAPCRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
+      sed -i 's|Icon=sublime-text|Icon=usr/share/icons/hicolor/256x256/apps/sublime-text.png|' $CRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
 
       # Desktop Action are not Unity specific.
-      sed -i 's|OnlyShowIn|#OnlyShowIn|g' $SNAPCRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
+      sed -i 's|OnlyShowIn|#OnlyShowIn|g' $CRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
     stage-packages:
-      - libbsd0
-      - libffi7
+      - libcurl4t64
       - libgl1
-      - libgtk-3-0
-      - libpcre3
+      - libgtk-3-0t64
       - libx11-6
-      - libxau6
-      - libxcb1
-      - libxdmcp6
+    prime:
+      - -usr/lib/*/libcolordprivate.so*
+      - -usr/lib/*/libicui18n.so*
+      - -usr/lib/*/libicuio.so*
+      - -usr/lib/*/libicutest.so*
+      - -usr/lib/*/libicutu.so*
     build-attributes:
-      - no-patchelf
+      - enable-patchelf
+
+  runtime-paths:
+    after:
+      - sublime-text
+    plugin: nil
+    build-packages:
+      - patchelf
+    override-prime: |
+      craftctl default
+      patchelf --force-rpath --set-rpath \
+        "\$ORIGIN:\$ORIGIN/../../usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}:/snap/core24/current/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}:/snap/core24/current/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}" \
+        "$CRAFT_PRIME/opt/sublime_text/sublime_text"

@@ -29,6 +29,8 @@ compression: lzo
 lint:
   ignore:
     - library:
+        - usr/lib/**/libEGL.so*
+        - usr/lib/**/libEGL_mesa.so*
         - usr/lib/**/libGLX_mesa.so*
         - usr/lib/**/libXxf86vm.so*
         - usr/lib/**/libcurl.so*
@@ -61,9 +63,13 @@ parts:
       sed -i 's|OnlyShowIn|#OnlyShowIn|g' $CRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
     stage-packages:
       - libcurl4t64
+      - libegl1
       - libgl1
       - libgtk-3-0t64
       - libx11-6
+    stage:
+      - -usr/lib/*/libgallium-*.so
+      - -usr/lib/*/dri
     prime:
       - -usr/lib/*/libcolordprivate.so*
       - -usr/lib/*/libicui18n.so*
@@ -73,8 +79,21 @@ parts:
     build-attributes:
       - enable-patchelf
 
+  # Preserve Noble's Gallium and DRI ELFs until the final no-sort RPATH pass,
+  # following the split-part pattern used by Ghostty.
+  mesa-dri:
+    plugin: nil
+    stage-packages:
+      - libgl1-mesa-dri
+    build-attributes:
+      - no-patchelf
+    stage:
+      - usr/lib/*/libgallium-*.so
+      - usr/lib/*/dri
+
   runtime-paths:
     after:
+      - mesa-dri
       - sublime-text
     plugin: nil
     build-packages:
@@ -84,3 +103,15 @@ parts:
       patchelf --force-rpath --set-rpath \
         "\$ORIGIN:\$ORIGIN/../../usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}:/snap/core24/current/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}:/snap/core24/current/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}" \
         "$CRAFT_PRIME/opt/sublime_text/sublime_text"
+      patchelf --no-sort --force-rpath --set-rpath \
+        "\$ORIGIN:/snap/core24/current/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}:/snap/core24/current/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}" \
+        "$CRAFT_PRIME/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}"/libgallium-*.so
+      dri_patched=false
+      for driver in "$CRAFT_PRIME/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}"/dri/*.so; do
+        [ -L "$driver" ] && continue
+        patchelf --no-sort --force-rpath --set-rpath \
+          "\$ORIGIN/..:/snap/core24/current/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}:/snap/core24/current/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}" \
+          "$driver"
+        dri_patched=true
+      done
+      test "$dri_patched" = true

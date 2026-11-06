@@ -49,6 +49,9 @@ apps:
   subl:
     command: opt/sublime_text/sublime_text
     command-chain: [bin/im-modules]
+    environment:
+      GTK_PATH: $SNAP/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}/gtk-3.0
+      GTK_IM_MODULE_FILE: $SNAP_USER_DATA/gtk-immodules.cache
     desktop: usr/share/applications/sublime_text.desktop
 
 parts:
@@ -58,7 +61,6 @@ parts:
     override-build: |
       craftctl default
       install -Dm755 "$CRAFT_PROJECT_DIR/snap/local/im-modules" "$CRAFT_PART_INSTALL/bin/im-modules"
-      sed -i "s/@ARCH_TRIPLET@/${CRAFT_ARCH_TRIPLET_BUILD_FOR}/g" "$CRAFT_PART_INSTALL/bin/im-modules"
       # Correct icon path
       sed -i 's|Icon=sublime-text|Icon=usr/share/icons/hicolor/256x256/apps/sublime-text.png|' $CRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
 

@@ -51,7 +51,7 @@ apps:
     command-chain: [bin/im-modules]
     environment:
       GTK_PATH: $SNAP/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}/gtk-3.0
-      GTK_IM_MODULE_FILE: $SNAP_USER_DATA/gtk-immodules.cache
+      GTK_IM_MODULE_FILE: $SNAP_USER_DATA/gtk-immodules-$SNAP_REVISION.cache
     desktop: usr/share/applications/sublime_text.desktop
 
 parts:

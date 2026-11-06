@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+# Generate a revision-specific cache of the snap's matching GTK IM modules.
+if [ ! -s "$GTK_IM_MODULE_FILE" ]; then
+    mkdir -p "$SNAP_USER_DATA"
+    cache=$(mktemp "$GTK_IM_MODULE_FILE.XXXXXX")
+    "$GTK_PATH/../libgtk-3-0t64/gtk-query-immodules-3.0" \
+        "$GTK_PATH"/3.0.0/immodules/*.so > "$cache"
+    mv "$cache" "$GTK_IM_MODULE_FILE"
+fi
+
+exec "$@"

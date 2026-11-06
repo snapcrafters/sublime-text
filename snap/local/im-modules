@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+
+# Host IM modules may require a newer GLib than the snap's GTK runtime.
+lib="$SNAP/usr/lib/@ARCH_TRIPLET@"
+export GTK_PATH="$lib/gtk-3.0"
+export GTK_IM_MODULE_FILE="$SNAP_USER_DATA/gtk-immodules.cache"
+mkdir -p "$SNAP_USER_DATA"
+cache=$(mktemp "$GTK_IM_MODULE_FILE.XXXXXX")
+trap 'rm -f "$cache"' EXIT
+trap 'exit 1' HUP INT TERM
+"$lib/libgtk-3-0t64/gtk-query-immodules-3.0" \
+    "$lib"/gtk-3.0/3.0.0/immodules/*.so > "$cache"
+mv "$cache" "$GTK_IM_MODULE_FILE"
+trap - EXIT HUP INT TERM
+
+exec "$@"

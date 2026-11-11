@@ -64,10 +64,12 @@ parts:
       # Disable upstream update checks by default; user preferences still override this.
       archive="$CRAFT_PART_INSTALL/opt/sublime_text/Packages/Default.sublime-package"
       settings_dir="$(mktemp -d)"
-      unzip -p "$archive" Preferences.sublime-settings > "$settings_dir/original.json"
-      # Sublime Text defaults contain JSON comments and trailing commas.
-      python3 -c 'import json, json5, sys; json.dump(json5.load(sys.stdin), sys.stdout)' < "$settings_dir/original.json" > "$settings_dir/parsed.json"
-      jq '.update_check = false' "$settings_dir/parsed.json" > "$settings_dir/Preferences.sublime-settings"
+      unzip -p "$archive" Preferences.sublime-settings > "$settings_dir/Preferences.sublime-settings"
+      # Preserve the comments and formatting in this user-facing documentation.
+      test "$(grep -c '^{$' "$settings_dir/Preferences.sublime-settings")" -eq 1
+      test "$(grep -c '"update_check"' "$settings_dir/Preferences.sublime-settings")" -eq 0
+      sed -i '/^{$/a\	"update_check": false,' "$settings_dir/Preferences.sublime-settings"
+      grep -q '^\s*"update_check": false,$' "$settings_dir/Preferences.sublime-settings"
       (cd "$settings_dir" && zip -q "$archive" Preferences.sublime-settings)
       rm -r "$settings_dir"
 
@@ -78,10 +80,8 @@ parts:
       # Desktop Action are not Unity specific.
       sed -i 's|OnlyShowIn|#OnlyShowIn|g' $CRAFT_PART_INSTALL/usr/share/applications/sublime_text.desktop
     build-packages:
-      - jq
       - unzip
       - zip
-      - python3-json5
     stage-packages:
       - fcitx5-frontend-gtk3
       - ibus-gtk3
